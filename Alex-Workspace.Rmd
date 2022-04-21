@@ -130,6 +130,49 @@ final_data %>%
 final_data <- read_csv("final_bike.csv")
 ```
 
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Dew Point(F)`) %>% 
+  ggplot(aes( x = `Dew Point(F)`, y = rides)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Humidity(%)`) %>% 
+  ggplot(aes( x = `Humidity(%)`, y = rides)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Wind Speed(mph)`) %>% 
+  ggplot(aes( x = `Wind Speed(mph)`, y = rides)) + 
+  geom_point() + 
+  geom_smooth()
+```
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Pressure(Hg)`) %>% 
+  ggplot(aes( x = `Pressure(Hg)`, y = rides)) + 
+  geom_point() + 
+  geom_smooth()
+```
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Precipitation(in)`) %>% 
+  ggplot(aes( x = `Precipitation(in)`, y = rides)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
 ## MODELING
 
 ```{r}
