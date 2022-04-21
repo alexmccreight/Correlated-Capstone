@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+    <idinfo>
+        <citation>
+            <citeinfo>
+                <origin/>
+                <pubdate>20160328</pubdate>
+                <title>Waterbodies</title>
+                <geoform>vector digital data</geoform>
+            </citeinfo>
+        </citation>
+        <descript>
+            <abstract>Waterbodies. The dataset contains polygons representing planimetric waterbodies, created as part of the DC Geographic Information System (DC GIS) for the D.C. Office of the Chief Technology Officer (OCTO). These features were originally captured in 2015 and updated in 2017, 2019, and 2021.</abstract>
+            <purpose>This data is used for the planning and management of Washington, D.C. by local government agencies.</purpose>
+        </descript>
+        <timeperd>
+            <timeinfo>
+                <sngdate>
+                    <caldate>20210311</caldate>
+                </sngdate>
+            </timeinfo>
+            <current>ground condition</current>
+        </timeperd>
+        <status>
+            <progress>Complete</progress>
+            <update>As needed</update>
+        </status>
+        <spdom>
+            <bounding>
+                <westbc>-77.22575918267839</westbc>
+                <eastbc>-76.81253535472528</eastbc>
+                <northbc>39.00086195800861</northbc>
+                <southbc>38.786658888995845</southbc>
+            </bounding>
+        </spdom>
+        <keywords>
+            <theme>
+                <themekt>None</themekt>
+                <themekey>environment</themekey>
+                <themekey>planimetric</themekey>
+                <themekey>waterbody</themekey>
+                <themekey>water</themekey>
+                <themekey>pond</themekey>
+                <themekey>lake</themekey>
+                <themekey>reservoir</themekey>
+            </theme>
+            <theme>
+                <themekt>ISO 19115 Topic Categories</themekt>
+                <themekey>environment</themekey>
+                <themekey>inlandWaters</themekey>
+            </theme>
+            <place>
+                <placekt>None</placekt>
+                <placekey>District of Columbia</placekey>
+                <placekey>Washington DC</placekey>
+            </place>
+        </keywords>
+        <accconst>Other Constraints</accconst>
+        <useconst>This work is licensed under a Creative Commons Attribution 4.0 International License.</useconst>
+        <ptcontac>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>D.C. Office of the Chief Technology Officer</cntorg>
+                    <cntper>GIS Data Coordinator</cntper>
+                </cntorgp>
+                <cntpos>GIS Data Coordinator</cntpos>
+                <cntaddr>
+                    <addrtype>mailing and physical</addrtype>
+                    <address>200 I Street SE, 5th Floor</address>
+                    <city>Washington</city>
+                    <state>DC</state>
+                    <postal>20003</postal>
+                </cntaddr>
+                <cntvoice>(202) 727-2277</cntvoice>
+                <cntfax>(202) 727-5660</cntfax>
+                <cntemail>dcgis@dc.gov</cntemail>
+                <hours>8:30 am - 5:00 pm</hours>
+            </cntinfo>
+        </ptcontac>
+        <datacred>D.C. Office of the Chief of Technology Officer (OCTO)</datacred>
+        <native>Version 6.2 (Build 9200) ; Esri ArcGIS 10.8.1.14362</native>
+    </idinfo>
+    <dataqual>
+        <logic>Water is a polygon feature class consisting of the following features and capture rules:
+
+Lakes, Reservoirs:  Delineate the shoreline of all standing bodies of water designated as a lake or reservoir.  Close polygon at neat-line when crossing tiles.
+
+Ponds:  Delineate the outline of all standing bodies of water designated as ponds.  Includes man-made ponds over 100 square feet.
+
+Rivers:  Capture the banks of all flowing bodies of water two meters wide or wider, i.e., rivers.
+
+Pools:  Capture the outline of the water portion of fountains and code as pools.</logic>
+        <lineage>
+            <procstep>
+                <procdesc>All planimetric data within the scope of the 2015 project was newly collected by Sanborn using DAT/EM Summit Evolution digital photogrammetric workstations, with the exception of StreetCenterlineLn_2015 (street centerlines) and GeoControlPt_2015 (ground control.) 
+
+The photogrammetric supervisor established the data collection conventions to be used for data capture, including the data schema, global origin and working units to be used for data collection.  The vendor assigned collection areas to stereo-compilation technicians based on OCTO’s orthophoto tile layout. They collected and saved planimetric data to the designated network subdirectory.
+
+After the data for the tile was collected, the technician visually reviewed the planimetric information for completeness and accuracy. The data was then passed on to GIS staff.
+
+GIS staff performed a preliminary review of the planimetric data. Omissions or errors that were found were communicated to stereo-compilation staff, who then updated the corresponding stereo-compilation file. The corrected data was then passed on to GIS staff.
+GIS staff then merged all data per delivery block. Polyline features that were required by OCTO not to have pseudo nodes were dissolved. 
+
+Following the dissolve, all point and polyline features were appended to a template geodatabase in their respective feature classes and attributed as defined in OCTO’s Data Dictionary.
+
+Polylines that participated in building polygons were placed into a working dataset, and topology built to locate gaps in the lines where polygons would not properly build. A technician closed those gaps. Then, polygons were built from these polylines in a working feature class. Based on centroids collected during the stereo-compilation process, polygons were then assigned their appropriate feature code based on OCTO’s Data Dictionary. Once all polygons were assigned their feature codes based on their corresponding centroid codes, the polygons remaining were then checked against the 2015 orthophoto imagery. Any unclassified polygons that were erroneously not given a feature code (because the stereo-compiler omitted a centroid that was not caught in a previous review) were then coded with the proper feature code. Also, at this point an additional review for proper code was performed, and incorrect codes changed to correct codes. Then, all remaining un-coded polygons were removed from the working polygon feature class.
+
+Polygons for each feature class were selected from the working feature class and appended to their appropriate feature classes based on OCTO’s Data Dictionary specifications.
+
+Once all features were put into their proper location in the geodatabase and attribution populated, a topology was established to locate geometry errors. GIS technicians corrected errors then removed the topology from the geodatabase. The geodatabase was then compacted.
+
+There are two isolated pockets of data that were not collected by Sanborn in the 2015 project, which are located around the White House and Capitol. Much of these two pockets have no 2015 stereo-photo coverage because the flying height required to collect imagery suitable for 3” pixel resolution orthophotos was too low relative to the no-fly zones over these areas. To avoid splitting a large number of planimetric features between differing imagery dates, the stereo-imagery voids were generally expanded to the center of the closest street (coincident with street centerlines where possible) to  produce the final void areas. Inside these voids in the 2015 data, OCTO’s existing planimetrics (updated in 2013) were appended to the 2015 data for all feature classes except BarrierLn and CurbLn.</procdesc>
+                <procdate>20160328</procdate>
+                <proccont>
+                    <cntinfo>
+                        <cntorgp>
+                            <cntorg>EarthData International, Inc</cntorg>
+                        </cntorgp>
+                        <cntaddr>
+                            <addrtype>mailing and physical</addrtype>
+                            <address>7320 Executive Way</address>
+                            <city>Frederick</city>
+                            <state>MD</state>
+                            <postal>21704</postal>
+                            <country>US</country>
+                        </cntaddr>
+                        <cntvoice>(301)948-8550</cntvoice>
+                        <cntfax>(301)963-2064</cntfax>
+                    </cntinfo>
+                </proccont>
+            </procstep>
+            <procstep>
+                <procdesc>This process describes 2017 updates to planimetric data originally captured in 2015.
+The planimetric dataset provided by DC OCTO on 5/22/2017 was used as the base dataset for update by Fugro. Following the Aerotriangulation of the imagery, stereo images were generated for the planimetric compilation to allow for full view of features that could be obscured by building lean in a 2D environment.  Relative and absolute orientation for the stereo images will be achieved by importing the orientation parameters from the AT results.
+The planimetrics were collected using MicroStation and KLT Atlas software packages and combined for final QC in ArcGIS in the final geodatabase format.  Prior to the initiation of compilation, a data capture matrix was established based on the data dictionary and compilation guidelines provided by DC OCTO.  Requirements for the 2017 planimetric collect included the addition of a feature class for features associated with airports called AirPly, crosswalks as a new feature to the sidewalk layer, and a complete recollection of data in areas around the White House and Capitol that was compiled in 2013 but not captured in the 2015 collect.  
+Topology checks were run using the OCTO provided rule set.  When running topology, flags were identified on the existing 2015 dataset and this topology check was submitted with the updated 2017 collect. Additionally, the inclusion of crosswalks in the sidewalk feature class has created flags in the topology due to overlapping with roads.  A separate geodatabase was generated to run the topology check (DC_Planimetrics2017_TopologyChks.gdb) and temporary sets of all feature classes with deleted data were generated.  The deleted data was removed in the temporary feature classes to reduce the number of false errors that had to be reviewed.  Due to the large number of exceptions in the 2015 data for curbs that were not covered by roads, the 2015 exceptions were identified and excluded from the current review.  This working topology dataset was used as a guide to make corrections to the final deliverable dataset (DC_Planimetrics2017.gdb).  Both the working topology geodatabase and the final deliverable geodatabase were submitted to DC.</procdesc>
+                <procdate>20170522</procdate>
+                <proccont>
+                    <cntinfo>
+                        <cntorgp>
+                            <cntorg>Fugro Geospatial, Inc.</cntorg>
+                        </cntorgp>
+                        <cntaddr>
+                            <addrtype>mailing and physical</addrtype>
+                            <address>7320 Executive Way</address>
+                            <city>Frederick</city>
+                            <state>MD</state>
+                            <postal>21704</postal>
+                            <country>US</country>
+                        </cntaddr>
+                        <cntvoice>(301)948-8550</cntvoice>
+                        <cntfax>(301)963-2064</cntfax>
+                    </cntinfo>
+                </proccont>
+            </procstep>
+            <procstep>
+                <procdesc>2019 Planimetric Data Capture Update
+Original data was captured in 2015 and updated in 2017 and 2019.  Digital planimetric mapping was collected in strict accordance with the feature types and formats specified in the RFP. The planimetric information was collected using SSK and KLT Atlas workstations. Quality control (QC) and editing tasks were performed in the MicroStation environment with a final review in ArcGIS. Production workflow was designed specifically to maintain the 3D elements and topology of the planimetric mapping once data is migrated to the ESRI personal geodatabase environment keeping the needed attribute information. Draping was done on the data to view in stereo. Topology checks were run using the OCTO provided rule set.</procdesc>
+                <procdate>20190423</procdate>
+                <proccont>
+                    <cntinfo>
+                        <cntorgp>
+                            <cntorg>Fugro Geospatial, Inc.</cntorg>
+                        </cntorgp>
+                        <cntaddr>
+                            <addrtype>mailing and physical</addrtype>
+                            <address>7320 Executive Way</address>
+                            <city>Frederick</city>
+                            <state>MD</state>
+                            <postal>21704</postal>
+                            <country>US</country>
+                        </cntaddr>
+                        <cntvoice>(301)948-8550</cntvoice>
+                        <cntfax>(301)963-2064</cntfax>
+                    </cntinfo>
+                </proccont>
+            </procstep>
+            <procstep>
+                <procdesc>2021 Planimetric Data Capture Update
+The planimetric dataset provided by DC OCTO on 6/15/2021 was used as the base dataset for update by Fugro. Following the Aerotriangulation of the imagery, stereo images were generated for the planimetric compilation to allow for full view of features that could be obscured by building lean in a 2D environment. Relative and absolute orientation for the stereo images will be achieved by importing the orientation parameters from the AT results.
+The planimetrics were collected using MicroStation and KLT Atlas software packages and combined for final QC in ArcGIS in the final geodatabase format. Prior to the initiation of compilation, a data capture matrix was established based on the data dictionary and compilation guidelines provided by DC OCTO.
+Topology checks were run using the OCTO provided rule set. When running topology, flags were identified on the existing 2019 dataset and this topology check was submitted with the updated 2021 collect.</procdesc>
+                <procdate>20210311</procdate>
+                <proccont>
+                    <cntinfo>
+                        <cntperp>
+                            <cntper>Fugro Geospatial. Inc.</cntper>
+                        </cntperp>
+                        <cntaddr>
+                            <addrtype>mailing and physical</addrtype>
+                            <address>7320 Executive Way</address>
+                            <city>Frederick</city>
+                            <state>MD</state>
+                            <postal>21794</postal>
+                            <country>US</country>
+                        </cntaddr>
+                        <cntvoice>(301)948-8550</cntvoice>
+                        <cntfax>(301)963-2064</cntfax>
+                    </cntinfo>
+                </proccont>
+            </procstep>
+        </lineage>
+    </dataqual>
+    <spdoinfo>
+        <direct>Vector</direct>
+        <ptvctinf>
+            <sdtsterm>
+                <sdtstype>GT-polygon composed of chains</sdtstype>
+                <ptvctcnt>1561</ptvctcnt>
+            </sdtsterm>
+        </ptvctinf>
+    </spdoinfo>
+    <eainfo>
+        <detailed>
+            <enttyp>
+                <enttypl>WaterPly</enttypl>
+                <enttypd>Waterbody features.</enttypd>
+                <enttypds>DC OCTO</enttypds>
+            </enttyp>
+            <attr>
+                <attrlabl>OBJECTID</attrlabl>
+                <attrdef>Internal feature number.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Sequential unique whole numbers that are automatically generated.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>SHAPE</attrlabl>
+                <attrdef>Feature geometry.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Coordinates defining the features.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>GIS_ID</attrlabl>
+                <attrdef>OCTO GIS sequential identifier.</attrdef>
+                <attrdefs>DC OCTO</attrdefs>
+            </attr>
+            <attr>
+                <attrlabl>FEATURECODE</attrlabl>
+                <attrdef>Feature Code.</attrdef>
+                <attrdefs>DC OCTO</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>4000</edomv>
+                                                						
+                        
+                        <edomvd>LAKE</edomvd>
+                                                						
+                        
+                        <edomvds>DC OCTO</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>4010</edomv>
+                                                						
+                        
+                        <edomvd>POND</edomvd>
+                                                						
+                        
+                        <edomvds>DC OCTO</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>4020</edomv>
+                                                						
+                        
+                        <edomvd>RIVER</edomvd>
+                                                						
+                        
+                        <edomvds>DC OCTO</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>4030</edomv>
+                                                						
+                        
+                        <edomvd>POOL</edomvd>
+                                                						
+                        
+                        <edomvds>DC OCTO</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>4040</edomv>
+                                                						
+                        
+                        <edomvd>WASTEWATER HOLDING PONDS</edomvd>
+                                                						
+                        
+                        <edomvds>DC OCTO</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>DESCRIPTION</attrlabl>
+                <attrdef>Description of feature code.</attrdef>
+                <attrdefs>DC OCTO</attrdefs>
+            </attr>
+            <attr>
+                <attrlabl>CAPTUREYEAR</attrlabl>
+                <attrdef>Capture Date.</attrdef>
+                <attrdefs>DC OCTO</attrdefs>
+            </attr>
+            <attr>
+                <attrlabl>CAPTUREACTION</attrlabl>
+                <attrdef>Type of edit performed on the feature.</attrdef>
+                <attrdefs>DC OCTO</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>A</edomv>
+                                                						
+                        
+                        <edomvd>Add</edomvd>
+                                                						
+                        
+                        <edomvds>DC OCTO</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>D</edomv>
+                                                						
+                        
+                        <edomvd>Delete</edomvd>
+                                                						
+                        
+                        <edomvds>DC OCTO</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>E</edomv>
+                                                						
+                        
+                        <edomvd>Existing</edomvd>
+                                                						
+                        
+                        <edomvds>DC OCTO</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+                <attrdomv>
+                                        					
+                    
+                    <edom>
+                                                						
+                        
+                        <edomv>U</edomv>
+                                                						
+                        
+                        <edomvd>Update</edomvd>
+                                                						
+                        
+                        <edomvds>DC OCTO</edomvds>
+                                                					
+                    
+                    </edom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>SHAPE_Length</attrlabl>
+                <attrdef>Length of feature in internal units.</attrdef>
+                <attrdefs>Esri</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Positive real numbers that are automatically generated.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>SHAPE_Area</attrlabl>
+                <attrdef>Area of feature in internal units squared.</attrdef>
+                <attrdefs>Esri</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Positive real numbers that are automatically generated.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+        </detailed>
+    </eainfo>
+    <distinfo>
+        <distrib>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>D.C. Office of the Chief Technology Officer</cntorg>
+                    <cntper>GIS Data Coordinator</cntper>
+                </cntorgp>
+                <cntpos>GIS Data Coordinator</cntpos>
+                <cntaddr>
+                    <addrtype>mailing and physical</addrtype>
+                    <address>200 I Street SE, 5th Floor</address>
+                    <city>Washington</city>
+                    <state>DC</state>
+                    <postal>20003</postal>
+                </cntaddr>
+                <cntvoice>(202) 727-2277</cntvoice>
+                <cntfax>(202) 727-5660</cntfax>
+                <cntemail>dcgis@dc.gov</cntemail>
+                <hours>8:30 am - 5:00 pm</hours>
+            </cntinfo>
+        </distrib>
+        <distliab>See access and use constraints information.</distliab>
+        <custom>DC datasets can be downloaded from https://opendata.dc.gov</custom>
+    </distinfo>
+    <metainfo>
+        <metd>20220204</metd>
+        <metc>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>D.C. Office of the Chief Technology Officer</cntorg>
+                    <cntper>GIS Data Coordinator</cntper>
+                </cntorgp>
+                <cntpos>GIS Data Coordinator</cntpos>
+                <cntaddr>
+                    <addrtype>mailing and physical</addrtype>
+                    <address>200 I Street SE, 5th Floor</address>
+                    <city>Washington</city>
+                    <state>DC</state>
+                    <postal>20003</postal>
+                </cntaddr>
+                <cntvoice>(202) 727-2277</cntvoice>
+                <cntfax>(202) 727-5660</cntfax>
+                <cntemail>dcgis@dc.gov</cntemail>
+                <hours>8:30 am - 5:00 pm</hours>
+            </cntinfo>
+        </metc>
+        <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+        <metstdv>FGDC-STD-001-1998</metstdv>
+        <mettc>local time</mettc>
+    </metainfo>
+</metadata>

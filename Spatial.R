@@ -1,27 +1,15 @@
----
-title: "Census Demo"
-author: "Yiyang Shi"
-date: "4/14/2022"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r}
 library(tidycensus)
 library(tidyverse)
 library(sf)
+library(readxl)
 options(tigris_use_cache = TRUE)
 census_api_key("593dedcd53f3a58724af5ac88fc2916d21a6ed05")
-```
 
-```{r}
+
+
 v20 <- load_variables(2020, "acs5", cache = TRUE)
-```
 
-```{r}
+
 VARS <- c(Income = "B19013_001", Pop = 'B01003_001', Age = "B01002_001")
 
 
@@ -32,21 +20,22 @@ DC_quant <- get_acs(state = "DC",
                     geometry = TRUE, 
                     output='wide')%>% 
   select(-ends_with('M'))  
-```
-```{r}
+
+
+
 get_DC_data <- function(V,V1,NAMES){
   DC_cat <- get_acs(state = "DC", geography = "tract", 
                     variables = V, geometry = TRUE, output='wide', summary_var = V1)
- 
+  
   DC_cat %>% 
     select(-ends_with('M')) %>%
     mutate(Total = select(.,-c(GEOID,NAME,summary_est,summary_moe)) %>% rowSums(na.rm=TRUE)) %>%
     mutate(across(-c(GEOID,NAME,summary_est,summary_moe), ~.x/DC_cat$summary_est)) %>%
     select(-c(summary_est,summary_moe,Total))
 }
-```
 
-```{r}
+
+
 V1 <- "B02001_001"
 V <- paste0("B02001_0",str_pad(c(2:8),2,"0",side='left'))
 NAMES <- v20 %>% filter(name %in% V) %>% pull(label) %>% str_replace('Estimate\\!\\!Total\\:\\!\\!','')
@@ -61,10 +50,10 @@ race <- DC_cat %>%
 names(race) = c('GEOID','NAME',trimws(paste0('Race_',str_sub(NAMES,0,26))))
 
 DC_data <- DC_quant %>% left_join(race)
-```
 
-```{r}
-colleges <- read_csv('hd2020.csv')
+
+
+colleges <- read_csv("D:\\STAT 452\\Correlated-Capstone\\hd2020.csv")
 colleges <- sf::st_as_sf(colleges,coords = c('LONGITUD','LATITUDE'))
 st_crs(colleges) <- DC_data %>% st_crs()
 
@@ -75,9 +64,9 @@ colleges_sub <- colleges[col_coord$X > st_bbox(DC_data)$xmin &  col_coord$X < st
 #Approx 1/2 mile radius
 DC_data$NumColleges <- st_intersects(DC_data,st_buffer(colleges_sub,dist=800)) %>% lengths()
 
-areawater <- read_sf('Waterbodies') 
+areawater <- read_sf("D:\\STAT 452\\Correlated-Capstone\\Waterbodies") 
 areawater <- st_transform(areawater, 6488)
-roads <- read_sf('tl_2018_11001_roads')
+roads <- read_sf("D:\\STAT 452\\Correlated-Capstone\\tl_2018_11001_roads")
 roads <- st_transform(roads,crs = st_crs(DC_data))
 roads_sub <- roads %>% filter( (st_intersects(roads,DC_data) %>% lengths()) > 0)
 
@@ -99,5 +88,4 @@ DC_data$NumHwys = distToRoads %>% apply(1,function(v) length(unique(roads_sub$FU
 DC_data$AnyHwys = DC_data$NumHwys > 0
 
 save(colleges_sub,DC_data,areawater,roads_sub, file = 'SpatialData.RData')
-```
 
