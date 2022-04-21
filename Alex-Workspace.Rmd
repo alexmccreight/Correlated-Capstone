@@ -1,0 +1,178 @@
+---
+title: "Alex Workspace"
+output: html_document
+date: '2022-04-14'
+---
+
+```{r Libraries, include = FALSE}
+require(dplyr)
+require(tidyverse)
+require(ggplot2)
+require(tidycensus)
+require(geosphere)
+require(lubridate)
+require(geeM)
+
+census_api_key("KEY GOES HERE")
+```
+
+
+```{r Data, include = FALSE}
+bike_2021 <- read_csv("bike_2021.csv")
+```
+
+
+```{r}
+bike_2021 %>% 
+  mutate(distance = distm(c(start_lng, start_lat), c(end_lng, end_lat), fun = distHaversine))
+```
+
+
+```{r}
+#startpoint <- matrix(c(bike_2021$start_lng[1:2], bike_2021$start_lat[1:2]), ncol = 2)
+#endpoint <- matrix(c(bike_2021$end_lng[1:2], bike_2021$end_lat[1:2]), ncol = 2)
+
+
+#bike_2021 %>% 
+#  mutate(distance = distm(startpoint, endpoint, fun = distHaversine))
+
+
+bike_2021$dist <- bike_2021 %>% 
+  select(start_lng,start_lat,end_lng,end_lat) %>%
+  purrr::pmap_dbl( ~ distm(matrix(c(..1,..2),ncol=2),matrix(c(..3,..4),ncol=2)))
+```
+
+```{r}
+bike <- read_csv("bike_data.csv")
+```
+
+```{r}
+clean_bike <- bike %>% 
+  select(c(started_at, ended_at, start_station_id, dist)) %>%
+  mutate(start_date = date(started_at)) %>%
+  mutate(end_date = date(ended_at)) %>% 
+  mutate(duration = as.numeric(difftime(ended_at, started_at, units = 'mins')))
+```
+
+```{r}
+clean_bike <- read_csv("final_bike.csv")
+```
+
+
+```{r}
+clean_bike <- clean_bike %>% 
+  select(c(start_date, start_station_id, dist, duration)) 
+```
+
+```{r}
+daily_bike <- clean_bike %>% 
+  group_by(start_station_id, start_date) %>% 
+  summarize(rider_number = n(), avg_duration = mean(duration), avg_dist = mean(dist))
+```
+
+```{r}
+weather <- read_csv("weather2021.csv") 
+```
+```{r}
+weather <- 
+weather %>%  
+  rename(start_date = date)
+```
+
+
+
+
+```{r}
+final_data <- 
+  merge(x = daily_bike, y = weather, by = "start_date")
+
+final_data <- 
+  final_data %>% 
+  select(-c(...1, Temperature_min, Temperature_max, Dew_min, Dew_max)) %>% 
+  drop_na()
+```
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Temperature(F)`) %>% 
+  ggplot(aes( x = `Temperature(F)`, y = rides)) + 
+  geom_point() + 
+  geom_smooth() + 
+  theme_classic()
+```
+
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number)) %>% 
+  ggplot(aes( x = start_date, y = rides)) + 
+  geom_point() + 
+  geom_line() +
+  geom_smooth()
+```
+```{r}
+final_data %>% 
+  ggplot(aes(x = start_date, y = rider_number, color = start_station_id)) + 
+  geom_line()
+```
+
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number)) %>% 
+  arrange(desc(rides))
+```
+
+
+
+
+```{r}
+final_data <- read_csv("final_bike.csv")
+```
+
+## MODELING
+
+```{r}
+mod1 <- geem(rider_number ~ `Temperature(F)`*I(`Temperature(F)` > 65), 
+             data = final_data, 
+             id = start_station_id, 
+             corstr = "exchangeable")
+
+summary(mod1)
+```
+
+
+```{r}
+colnames(final_data)
+```
+
+```{r}
+# Around 3 mins 15 seconds
+mod2 <-  geem(rider_number ~ avg_duration + avg_dist + `Temperature(F)` + `Dew Point(F)` + `Humidity(%)` + `Wind Speed(mph)` + `Pressure(Hg)` + `Precipitation(in)`,
+             data = final_data, 
+             id = start_station_id, 
+             corstr = "exchangeable")
+
+summary(mod2)
+```
+
+```{r}
+# Around 35 seconds
+mod3 <-  geem(rider_number ~ avg_duration + avg_dist + `Temperature(F)`*I(`Temperature(F)` > 65) + `Dew Point(F)` + `Humidity(%)` + `Wind Speed(mph)` + `Pressure(Hg)` + `Precipitation(in)`,
+             data = final_data, 
+             id = start_station_id, 
+             corstr = "independence")
+
+summary(mod3)
+```
+
+```{r}
+mod4 <-  geem(rider_number ~ avg_duration + avg_dist + `Temperature(F)`*I(`Temperature(F)` > 65) + `Dew Point(F)` + `Humidity(%)` + `Wind Speed(mph)` + `Pressure(Hg)` + `Precipitation(in)`,
+             data = final_data, 
+             id = start_station_id, 
+             corstr = "exchangeable")
+
+summary(mod4)
+```
+
+
