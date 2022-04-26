@@ -21,9 +21,6 @@ load('SpatialData.RData')
 ```{r}
 bike <- read_csv("D:\\STAT 452\\Correlated-Capstone\\bike_data.csv")
 clean_bike <- read_csv("D:\\STAT 452\\Correlated-Capstone\\final_bike.csv")
-
-
-bike <- read_csv("bike_data.csv") #For brianna
 ```
 
 ```{r}
@@ -48,8 +45,13 @@ st_crs(bike_coord) <- st_crs(DC_data)
 bike_coord_sub <- st_crop(bike_coord,st_bbox(DC_data))
 
 ggplot(DC_data) + 
-  geom_sf(fill='white') + geom_sf(data = areawater,fill='blue')  + geom_sf(data = bike_coord_sub,size=.2,color='red') + geom_sf(data = roads_sub,color='orange') + theme_void()
+  geom_sf(fill='white') + 
+  geom_sf(data = areawater,fill='blue')  + 
+  geom_sf(data = bike_coord_sub,size=.2,color='red') + 
+  geom_sf(data = roads_sub,color='orange') + 
+  theme_void()
 ```
+
 ```{r}
 
 bike_spatial <- st_join(bike_coord, DC_data) %>% filter(!is.na(GEOID))
@@ -67,7 +69,4 @@ ggplot(DC_data) +
         axis.line = element_blank()) 
 ```
 
-```{r}
-#sf_DC = st_as_sf(, coords = c("longitude", "latitude"), crs = 4326)
-```
 
