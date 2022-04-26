@@ -124,10 +124,39 @@ final_data %>%
 ```
 
 
-
+## Read in this data set
 
 ```{r}
 final_data <- read_csv("final_bike.csv")
+```
+
+```{r}
+final_data <-
+  final_data %>% 
+  mutate(Rain = ifelse(final_data$`Precipitation(in)` == 0, 0, 1))
+```
+```{r}
+final_data %>% 
+  mutate(weekday = weekdays(start_date))
+```
+
+
+```{r}
+weekday <- c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')
+
+final_data$wday <-factor((weekdays(final_data$start_date) %in% weekday), 
+         levels=c(FALSE, TRUE), labels=c('weekend', 'weekday'))
+```
+
+
+```{r}
+final_data <- 
+  final_data %>% 
+  select(-`Precipitation(in)`)
+```
+
+```{r}
+write_csv(final_data, "final_bike.csv")
 ```
 
 ```{r}
@@ -138,6 +167,16 @@ final_data %>%
   geom_point() + 
   geom_smooth()
 ```
+
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Temperature(F)`, wday) %>% 
+  ggplot(aes( x = `Temperature(F)`, y = rides, color = wday)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
 
 ```{r}
 final_data %>% 
@@ -164,14 +203,28 @@ final_data %>%
   geom_point() + 
   geom_smooth()
 ```
+
+## Look at predictors against each other to check for collinearity, simplify weather predictors, pick a day and look at ridership by long, lat
+
 ```{r}
-final_data %>% 
-  group_by(start_date) %>% 
-  summarise(rides = sum(rider_number), `Precipitation(in)`) %>% 
-  ggplot(aes( x = `Precipitation(in)`, y = rides)) + 
-  geom_point() + 
-  geom_smooth()
+mod3 <-  geem(rider_number ~ avg_duration + avg_dist + `Temperature(F)`*I(`Temperature(F)` > 65)*wday + `Humidity(%)`*I(`Humidity(%)` > 75) + `Wind Speed(mph)`*I(`Wind Speed(mph)` >11),
+             data = as.data.frame(final_data), 
+             id = start_station_id, 
+             corstr = "independence")
+
+summary(mod3)
 ```
+
+```{r}
+mod4 <-  geem(rider_number ~ avg_duration + avg_dist + `Temperature(F)`*I(`Temperature(F)` > 65) + `Humidity(%)`*I(`Humidity(%)` > 75) + `Wind Speed(mph)`*I(`Wind Speed(mph)` >11),
+             data = as.data.frame(final_data), 
+             id = start_station_id, 
+             corstr = "exchangeable")
+
+summary(mod4)
+```
+
+
 
 ## MODELING
 
@@ -202,7 +255,7 @@ summary(mod2)
 ```{r}
 # Around 35 seconds
 mod3 <-  geem(rider_number ~ avg_duration + avg_dist + `Temperature(F)`*I(`Temperature(F)` > 65) + `Dew Point(F)` + `Humidity(%)` + `Wind Speed(mph)` + `Pressure(Hg)` + `Precipitation(in)`,
-             data = final_data, 
+             data = as.data.frame(final_data), 
              id = start_station_id, 
              corstr = "independence")
 

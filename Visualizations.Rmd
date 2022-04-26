@@ -1,0 +1,52 @@
+---
+title: "Visualizations"
+output: html_document
+date: '2022-04-26'
+---
+
+```{r}
+require(dplyr)
+require(tidyverse)
+require(ggplot2)
+require(tidycensus)
+require(geosphere)
+require(lubridate)
+require(geeM)
+```
+
+```{r}
+
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Humidity(%)`) %>% 
+  ggplot(aes( x = `Humidity(%)`, y = rides)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Wind Speed(mph)`) %>% 
+  ggplot(aes( x = `Wind Speed(mph)`, y = rides)) + 
+  geom_point() + 
+  geom_smooth()
+```
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Pressure(Hg)`) %>% 
+  ggplot(aes( x = `Pressure(Hg)`, y = rides)) + 
+  geom_point() + 
+  geom_smooth()
+```
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Precipitation(in)`) %>% 
+  ggplot(aes( x = `Precipitation(in)`, y = rides)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+
