@@ -1,0 +1,58 @@
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error=TRUE)
+library(dplyr)
+library(lubridate)
+library(stringr)
+library(ggplot2)
+library(sf)
+library(spdep)
+library(splines)
+library(scales)
+library(spatialreg)
+library(gridExtra)
+library(xtable)
+library(DT)
+library(readr)
+set.seed(452)
+
+load('SpatialData.RData')
+```
+
+```{r}
+bike <- read_csv("D:\\STAT 452\\Correlated-Capstone\\bike_data.csv")
+clean_bike <- read_csv("D:\\STAT 452\\Correlated-Capstone\\final_bike.csv")
+
+```
+
+```{r}
+bike_coord <- bike %>% 
+  group_by(start_station_id) %>%
+  summarize(start_lat = mean(start_lat,na.rm=TRUE), start_lng = mean(start_lng,na.rm=TRUE))
+
+bike_coord %>% arrange(start_station_id)
+
+bike_coord <- bike_coord %>% st_as_sf(coords=c('start_lat','start_lng'))
+
+#bike_sf <- inner_join(clean_bike, bike_coord, by = "start_station_id")
+```
+
+
+```{r}
+
+#BRianna look at this...
+st_crs(bike_coord) <- st_crs(DC_data)
+bike_spatial <- st_join( bike_coord,DC_data) 
+
+ggplot(DC_data) + 
+  geom_sf(aes(fill = IncomeE)) +
+  scale_fill_continuous(name = "Median Income", labels = comma, high = "blue", low = "lightgrey") +
+  labs(title = "DC Income Estimate by Census Tract") +
+  theme_classic() + 
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank()) 
+```
+```{r}
+sf_DC = st_as_sf(, coords = c("longitude", "latitude"), crs = 4326)
+```
+
