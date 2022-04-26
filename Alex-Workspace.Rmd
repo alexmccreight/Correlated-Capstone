@@ -124,7 +124,7 @@ final_data %>%
 ```
 
 
-
+## Read in this data set
 
 ```{r}
 final_data <- read_csv("final_bike.csv")
@@ -202,7 +202,7 @@ summary(mod2)
 ```{r}
 # Around 35 seconds
 mod3 <-  geem(rider_number ~ avg_duration + avg_dist + `Temperature(F)`*I(`Temperature(F)` > 65) + `Dew Point(F)` + `Humidity(%)` + `Wind Speed(mph)` + `Pressure(Hg)` + `Precipitation(in)`,
-             data = final_data, 
+             data = as.data.frame(final_data), 
              id = start_station_id, 
              corstr = "independence")
 
