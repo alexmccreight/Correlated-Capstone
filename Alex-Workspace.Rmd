@@ -131,6 +131,35 @@ final_data <- read_csv("final_bike.csv")
 ```
 
 ```{r}
+final_data <-
+  final_data %>% 
+  mutate(Rain = ifelse(final_data$`Precipitation(in)` == 0, 0, 1))
+```
+```{r}
+final_data %>% 
+  mutate(weekday = weekdays(start_date))
+```
+
+
+```{r}
+weekday <- c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')
+
+final_data$wday <-factor((weekdays(final_data$start_date) %in% weekday), 
+         levels=c(FALSE, TRUE), labels=c('weekend', 'weekday'))
+```
+
+
+```{r}
+final_data <- 
+  final_data %>% 
+  select(-`Precipitation(in)`)
+```
+
+```{r}
+write_csv(final_data, "final_bike.csv")
+```
+
+```{r}
 final_data %>% 
   group_by(start_date) %>% 
   summarise(rides = sum(rider_number), `Dew Point(F)`) %>% 
@@ -172,6 +201,11 @@ final_data %>%
   geom_point() + 
   geom_smooth()
 ```
+
+```{r}
+final_data$
+```
+
 
 ## MODELING
 
