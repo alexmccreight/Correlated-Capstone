@@ -171,6 +171,16 @@ final_data %>%
 ```{r}
 final_data %>% 
   group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Temperature(F)`, wday) %>% 
+  ggplot(aes( x = `Temperature(F)`, y = rides, color = wday)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+
+```{r}
+final_data %>% 
+  group_by(start_date) %>% 
   summarise(rides = sum(rider_number), `Humidity(%)`) %>% 
   ggplot(aes( x = `Humidity(%)`, y = rides)) + 
   geom_point() + 
@@ -193,18 +203,27 @@ final_data %>%
   geom_point() + 
   geom_smooth()
 ```
+
+## Look at predictors against each other to check for collinearity, simplify weather predictors, pick a day and look at ridership by long, lat
+
 ```{r}
-final_data %>% 
-  group_by(start_date) %>% 
-  summarise(rides = sum(rider_number), `Precipitation(in)`) %>% 
-  ggplot(aes( x = `Precipitation(in)`, y = rides)) + 
-  geom_point() + 
-  geom_smooth()
+mod3 <-  geem(rider_number ~ avg_duration + avg_dist + `Temperature(F)`*I(`Temperature(F)` > 65)*wday + `Humidity(%)`*I(`Humidity(%)` > 75) + `Wind Speed(mph)`*I(`Wind Speed(mph)` >11),
+             data = as.data.frame(final_data), 
+             id = start_station_id, 
+             corstr = "independence")
+
+summary(mod3)
 ```
 
 ```{r}
-final_data$
+mod4 <-  geem(rider_number ~ avg_duration + avg_dist + `Temperature(F)`*I(`Temperature(F)` > 65) + `Humidity(%)`*I(`Humidity(%)` > 75) + `Wind Speed(mph)`*I(`Wind Speed(mph)` >11),
+             data = as.data.frame(final_data), 
+             id = start_station_id, 
+             corstr = "exchangeable")
+
+summary(mod4)
 ```
+
 
 
 ## MODELING
