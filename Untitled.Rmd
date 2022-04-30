@@ -80,8 +80,23 @@ ggplot(DC_data) +
   scale_color_continuous(low = "light pink", high = "red") 
 ```
 
+
+Temperature: > 65
+Humidity: > 75
+Wind Speed: > 11
+
+
+
+
 ```{r}
-save(clean_bike, bike_spatial, data, data_74, file = "bike.RData")
+data <- data %>% 
+    mutate(TemperatureCat = ifelse(`Temperature(F)` >= 65, "High", "Low")) %>% 
+    mutate(HumidityCat = ifelse(`Humidity(%)` >= 75, "High", "Low")) %>% 
+    mutate(WindCat =  ifelse(`Wind Speed(mph)` >= 11, "High", "Low"))
+```
+
+```{r}
+save(clean_bike, bike_spatial, data, data_74, file = "mergedData.RData")
 ```
 
 ```{r}
@@ -126,9 +141,56 @@ clean_bike %>%
   ggtitle("Total Daily Rides vs. Wind Speed(mph)")
 ```
 
+
 ```{r}
+Plot_4 <- bike %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), dist = sum(dist)) %>% 
+  ggplot(aes( x = dist, y = rides)) + 
+  theme_classic() + 
+  ylab("Number of rides") + 
+  xlab("Dist") + 
+  geom_point() + 
+  geom_smooth() +
+  ggtitle("Total Daily Rides vs. dist)")
+```
+
+```{r}
+Plot_5 <- data %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), duration = sum(avg_duration)) %>% 
+  ggplot(aes( x = duration, y = rides)) + 
+  theme_classic() + 
+  ylab("Number of rides") + 
+  xlab("duration") + 
+  geom_point() + 
+  geom_smooth() +
+  ggtitle("Total Daily Rides vs.duration")
+```
+
+# avg distance + avg duration 
+
+```{r}
+# Temperature: > 65
+# Humidity: > 75
+# Wind Speed: > 11
+
 Plot_1 
 Plot_2
 Plot_3
 ```
+
+
+
+```{r}
+Plot_4
+```
+
+
+```{r}
+Plot_5
+```
+
+
+
 
