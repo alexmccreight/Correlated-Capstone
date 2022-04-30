@@ -69,4 +69,7 @@ ggplot(DC_data) +
         axis.line = element_blank()) 
 ```
 
+```{r}
+bike_spatial$distToPI = st_distance(bike_spatial,points_of_interest) %>% as.vector()
+```
 

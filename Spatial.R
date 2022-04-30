@@ -52,8 +52,8 @@ names(race) = c('GEOID','NAME',trimws(paste0('Race_',str_sub(NAMES,0,26))))
 DC_data <- DC_quant %>% left_join(race)
 
 
-colleges <- read_csv("hd2020.csv")
-#colleges <- read_csv("D:\\STAT 452\\Correlated-Capstone\\hd2020.csv")
+# colleges <- read_csv("hd2020.csv")
+colleges <- read_csv("D:\\STAT 452\\Correlated-Capstone\\hd2020.csv")
 colleges <- sf::st_as_sf(colleges,coords = c('LONGITUD','LATITUDE'))
 st_crs(colleges) <- DC_data %>% st_crs()
 
@@ -64,12 +64,21 @@ colleges_sub <- colleges[col_coord$X > st_bbox(DC_data)$xmin &  col_coord$X < st
 #Approx 1/2 mile radius
 DC_data$NumColleges <- st_intersects(DC_data,st_buffer(colleges_sub,dist=800)) %>% lengths()
 
-areawater <- read_sf("Waterbodies") 
-#areawater <- read_sf("D:\\STAT 452\\Correlated-Capstone\\Waterbodies") 
+# areawater <- read_sf("Waterbodies") 
+areawater <- read_sf("D:\\STAT 452\\Correlated-Capstone\\Waterbodies")
 areawater <- st_transform(areawater,crs = st_crs(DC_data))
-roads <- read_sf("tl_2018_11001_roads")
-#roads <- read_sf("D:\\STAT 452\\Correlated-Capstone\\tl_2018_11001_roads")
+# roads <- read_sf("tl_2018_11001_roads")
+roads <- read_sf("D:\\STAT 452\\Correlated-Capstone\\tl_2018_11001_roads")
 roads <- st_transform(roads,crs = st_crs(DC_data))
+
+points_of_interest <- read_csv("D:\\STAT 452\\Correlated-Capstone\\Points_of_Interest.csv")
+points_of_interest <- points_of_interest %>% filter(ALIASNAME == "WASHINGTON MONUMENT") %>% 
+  select(X, Y, ALIASNAME) %>% 
+  st_as_sf(coords = c('X','Y')) %>% 
+  st_set_crs(st_crs(DC_data)) %>% 
+  st_transform()
+  
+
 roads_sub <- roads %>% filter( (st_intersects(roads,DC_data) %>% lengths()) > 0) %>% filter(RTTYP %in% c('U','I'))
 roads_sub <- st_crop(roads_sub,st_bbox(DC_data))
 DC_data$AREA = st_area(DC_data) %>% as.vector() #square feet
@@ -89,5 +98,5 @@ DC_data$MinDistToHwy = distToRoads %>% apply(1,min)
 DC_data$NumHwys = distToRoads %>% apply(1,function(v) length(unique(roads_sub$FULLNAME[v == 0])))
 DC_data$AnyHwys = DC_data$NumHwys > 0
 
-save(colleges_sub,DC_data,areawater,roads_sub, file = 'SpatialData.RData')
+save(colleges_sub,DC_data,areawater,roads_sub,points_of_interest, file = 'SpatialData.RData')
 
