@@ -1,0 +1,134 @@
+---
+title: "Data Cleaning(bike)"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Libraries, include = FALSE}
+require(dplyr)
+require(tidyverse)
+require(ggplot2)
+require(tidycensus)
+require(geosphere)
+require(lubridate)
+require(geeM)
+library(tidyverse)
+library(lubridate)
+library(dplyr)
+library(rvest)
+census_api_key("KEY GOES HERE")
+```
+
+## Bike Data 
+
+```{r}
+load("bike.RData")
+```
+
+
+```{r}
+load("SpatialData.RData")
+```
+
+```{r}
+Holiday_dates <- c("2021-01-01", "2021-01-18", "2021-01-20", "2021-02-15", "2021-04-16", "2021-05-31", "2021-06-18","2021-06-19", "2021-07-04", "2021-07-05", "2021-09-06", "2021-10-11", "2021-11-11", "2021-11-25", "2021-12-24", "2021-12-25", "2021-12-31")
+Holiday_dates <- as.Date(Holiday_dates)
+
+clean_bike <-
+  clean_bike %>% 
+  #select(-Holiday) %>% 
+  mutate(Holiday = start_date %in% Holiday_dates)
+```
+
+```{r}
+clean_bike %>% 
+   filter(start_date == "2021-07-04") 
+```
+
+```{r}
+data <- merge(x = clean_bike, y = bike_spatial, by = "start_station_id", all.y = TRUE)
+```
+```{r}
+data_74 <-
+  data %>% 
+  filter(start_date == "2021-07-04") 
+```
+
+
+```{r}
+data_test <- 
+data_74 %>% 
+  arrange(desc(rider_number))
+```
+
+```{r}
+data_74 <- 
+data_74 %>% 
+  arrange(rider_number)
+```
+
+```{r}
+ggplot(DC_data) + 
+  geom_sf(color = "white")+
+  geom_sf(data = data_74, aes(geometry=geometry, color = rider_number)) +
+  theme_classic() + 
+  labs(title = "Total rides from each station on July 4th, 2021", color = "Number of Riders") +
+ # scale_color_viridis_c('Total number of rides',option = "magma") +
+  scale_color_continuous(low = "light pink", high = "red") 
+```
+
+```{r}
+save(clean_bike, bike_spatial, data, data_74, file = "bike.RData")
+```
+
+```{r}
+Plot_1 <- 
+clean_bike %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Temperature(F)`) %>% 
+  ggplot(aes( x = `Temperature(F)`, y = rides)) + 
+  theme_classic() + 
+  ylab("Number of rides") + 
+  xlab("Temperature(Fº)") + 
+  geom_point() + 
+  geom_smooth() +
+  ggtitle("Total Daily Rides vs. Temperature(Fº)")
+
+```
+
+```{r}
+Plot_2 <- 
+clean_bike %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Humidity(%)`) %>% 
+  ggplot(aes( x = `Humidity(%)`, y = rides)) + 
+  theme_classic() + 
+  ylab("Number of rides") + 
+  xlab("Humidity(%)") + 
+  geom_point() + 
+  geom_smooth() +
+  ggtitle("Total Daily Rides vs. Humidity(%)")
+```
+```{r}
+Plot_3 <- 
+clean_bike %>% 
+  group_by(start_date) %>% 
+  summarise(rides = sum(rider_number), `Wind Speed(mph)`) %>% 
+  ggplot(aes( x = `Wind Speed(mph)`, y = rides)) + 
+  theme_classic() + 
+  ylab("Number of rides") + 
+  xlab("Wind Speed(mph)") + 
+  geom_point() + 
+  geom_smooth() +
+  ggtitle("Total Daily Rides vs. Wind Speed(mph)")
+```
+
+```{r}
+Plot_1 
+Plot_2
+Plot_3
+```
+
