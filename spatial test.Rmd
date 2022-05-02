@@ -70,6 +70,34 @@ ggplot(DC_data) +
 ```
 
 ```{r}
-bike_spatial$distToPI = st_distance(bike_spatial,points_of_interest) %>% as.vector()
+#Distance to Point of interests
+
+bike_spatial$distToWM = st_distance(bike_spatial,points_of_interest %>% filter(ALIASNAME == "WASHINGTON MONUMENT")) %>% as.vector()
+
+bike_spatial$distToGU = st_distance(bike_spatial,points_of_interest %>% filter(ALIASNAME == "GEORGETOWN UNIVERSITY HEALY LAWN")) %>% as.vector()
+
+bike_spatial$distToWF = st_distance(bike_spatial,points_of_interest %>% filter(ALIASNAME == "THE YARDS PARK WATER FEATURE")) %>% as.vector()
+
+bike_spatial$distToDF = st_distance(bike_spatial,points_of_interest %>% filter(ALIASNAME == "DUPONT MEMORIAL FOUNTAIN")) %>% as.vector()
+
+
+# bike_spatial <- bike_spatial %>% 
+#   filter(GEOID != 11001980000)
+```
+
+```{r}
+# Census tract you might consider to categorized. Since they dont have a income median, but they do have stations in the area that potentially have plenty of daily riders.
+
+# Census tract 9800 includes the white house, capital, Lincoln memorial and the monument. 
+# Census Tract 2.01 is Georgetown University
+# Census tract 68.04 is the includes Kennedy memorial stadium
+# Census tract 95.11 is the Catholic University of America
+bike_spatial %>% 
+  filter(is.na(IncomeE)) %>% 
+  count(NAME)
+```
+
+```{r}
+
 ```
 
