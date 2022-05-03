@@ -74,9 +74,9 @@ roads <- st_transform(roads,crs = st_crs(DC_data))
 points_of_interest <- read_csv("D:\\STAT 452\\Correlated-Capstone\\Points_of_Interest.csv")
 points_of_interest <- points_of_interest %>% 
   filter(ALIASNAME == "WASHINGTON MONUMENT"|
-         ALIASNAME == "GEORGETOWN UNIVERSITY HEALY LAWN"|
+         ALIASNAME == "DUPONT MEMORIAL FOUNTAIN"|
          ALIASNAME == "THE YARDS PARK WATER FEATURE"|
-         ALIASNAME == "DUPONT MEMORIAL FOUNTAIN") %>% 
+         ALIASNAME == "GEORGE WASHINGTON UNIVERSITY HALL OF GOVERNMENT") %>% 
   select(X, Y, ALIASNAME) %>% 
   st_as_sf(coords = c('X','Y')) %>% 
   st_set_crs(st_crs(DC_data)) %>% 
@@ -102,5 +102,5 @@ DC_data$MinDistToHwy = distToRoads %>% apply(1,min)
 DC_data$NumHwys = distToRoads %>% apply(1,function(v) length(unique(roads_sub$FULLNAME[v == 0])))
 DC_data$AnyHwys = DC_data$NumHwys > 0
 
-save(colleges_sub,DC_data,areawater,roads_sub,points_of_interest, file = 'SpatialData.RData')
+save(colleges_sub,DC_data,areawater,roads_sub,points_of_interest, file = "SpatialData.RData")
 
