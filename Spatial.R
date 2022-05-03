@@ -74,8 +74,6 @@ roads <- st_transform(roads,crs = st_crs(DC_data))
 points_of_interest <- read_csv("D:\\STAT 452\\Correlated-Capstone\\Points_of_Interest.csv")
 points_of_interest <- points_of_interest %>% 
   filter(ALIASNAME == "WASHINGTON MONUMENT"|
-         ALIASNAME == "DUPONT MEMORIAL FOUNTAIN"|
-         ALIASNAME == "THE YARDS PARK WATER FEATURE"|
          ALIASNAME == "GEORGE WASHINGTON UNIVERSITY HALL OF GOVERNMENT") %>% 
   select(X, Y, ALIASNAME) %>% 
   st_as_sf(coords = c('X','Y')) %>% 
