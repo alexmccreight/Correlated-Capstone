@@ -21,7 +21,9 @@ colnames(data)
 ```
 
 ```{r}
-model <- geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  HumidityCat+ WindCat + IncomeE + PopE + `Race_White alone` + distToWM + distToGU, id = start_station_id, data = data, corstr = "ar1")
+model <- data %>% 
+  na.omit() %>% 
+  geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  HumidityCat+ WindCat + IncomeE + PopE + `Race_White alone` + distToWM + distToGU, id = start_station_id, data=data, corstr = "independence")
 ```
 
 ```{r}
