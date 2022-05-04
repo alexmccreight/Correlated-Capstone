@@ -1,0 +1,36 @@
+---
+title: "final_data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+load("mergedData.RData")
+```
+
+```{r}
+library(geeM)
+library(dplyr)
+```
+
+```{r}
+colnames(data)
+```
+
+```{r}
+model <- geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  HumidityCat+ WindCat + IncomeE + PopE + `Race_White alone` + distToWM + distToGU, id = start_station_id, data = data, corstr = "ar1")
+```
+
+```{r}
+model_1 <- geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  HumidityCat+ WindCat + IncomeE + PopE + `Race_White alone` + distToWM + distToGU, id = start_station_id, data = data, corstr = "independence")
+```
+
+```{r}
+model_2 <- geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  HumidityCat+ WindCat + IncomeE + PopE + `Race_White alone` + distToWM + distToGU, id = start_station_id, data = data, corstr = "exchangeable")
+```
+
+
+
