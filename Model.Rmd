@@ -18,6 +18,8 @@ library(dplyr)
 
 ```{r}
 colnames(data)
+
+data <- data %>% na.omit()
 ```
 
 ```{r}
@@ -34,5 +36,20 @@ model_1 <- geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  Humid
 model_2 <- geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  HumidityCat+ WindCat + IncomeE + PopE + `Race_White alone` + distToWM + distToGU, id = start_station_id, data = data, corstr = "exchangeable")
 ```
 
+```{r}
+summary(model)
+summary(model_1)
+summary(model_2)
+```
+```{r}
+summary(model)$coefficients[,2]
+```
+
+```{r}
+```
+
+
+```{r}
+```
 
 
