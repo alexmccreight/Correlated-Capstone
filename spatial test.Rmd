@@ -57,13 +57,13 @@ ggplot(DC_data) +
 bike_spatial <- st_join(bike_coord, DC_data) %>% filter(!is.na(GEOID))
 
 ggplot(DC_data) + 
-  geom_sf(aes(fill = `Race_White alone`),size=.1) +
+  geom_sf(aes(fill = IncomeE),size=.1) +
   geom_sf(data = bike_spatial,color='yellow',size=.2) + 
   geom_sf(data = areawater,fill='lightblue',color='lightblue') + 
   geom_sf(data = roads_sub,color='orange') +
   geom_sf(data = points_of_interest, aes(geometry=geometry), color = 'red') +
-  scale_fill_continuous(name = "Race White Proportion", labels = comma, high = "blue", low = "lightgrey") +
-  labs(title = "Distribution of Bike Stations by Census Tract") +
+  scale_fill_continuous(name = "Median Income", labels = comma, high = "blue", low = "lightgrey") +
+  labs(title = "Median Income by Census Tract") +
   theme_classic() + 
   theme(axis.text = element_blank(),
         axis.ticks = element_blank(),
@@ -76,10 +76,6 @@ ggplot(DC_data) +
 bike_spatial$distToWM = st_distance(bike_spatial,points_of_interest %>% filter(ALIASNAME == "WASHINGTON MONUMENT")) %>% as.vector()
 
 bike_spatial$distToGU = st_distance(bike_spatial,points_of_interest %>% filter(ALIASNAME == "GEORGE WASHINGTON UNIVERSITY HALL OF GOVERNMENT")) %>% as.vector()
-
-bike_spatial$distToWF = st_distance(bike_spatial,points_of_interest %>% filter(ALIASNAME == "THE YARDS PARK WATER FEATURE")) %>% as.vector()
-
-bike_spatial$distToDF = st_distance(bike_spatial,points_of_interest %>% filter(ALIASNAME == "DUPONT MEMORIAL FOUNTAIN")) %>% as.vector()
 
 
 # bike_spatial <- bike_spatial %>% 
