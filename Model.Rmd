@@ -70,12 +70,12 @@ DC_resid_avg <- data %>%
 data %>% 
   filter(start_date == "2021-07-04") %>% 
   ggplot() + 
-  geom_sf(data=DC_data, fill = "white")+
-  geom_sf(aes(geometry=geometry, color = GEE_resid),size=.5) +
+  geom_sf(data=DC_data, color = "white")+
+  geom_sf(aes(geometry=geometry, color = GEE_resid)) +
   theme_classic() + 
   labs(title = "Model Prediction Errors from each station on July 4th, 2021", color = "Prediction Errors") +
  # scale_color_viridis_c('Total number of rides',option = "magma") +
-  scale_color_gradient2(low = "blue",mid='white', high = "red") 
+  scale_color_gradient(low = "lightpink",high = "blue") 
 
 IDS <- data %>% filter(abs(scale(GEE_resid))>3) %>% count(start_station_id) %>% arrange(desc(n)) %>% slice(1:5) %>% pull(start_station_id)
   
@@ -83,30 +83,36 @@ IDS <- data %>% filter(abs(scale(GEE_resid))>3) %>% count(start_station_id) %>% 
 data %>% 
   filter(start_station_id %in% IDS) %>% 
   ggplot(aes(x = start_date, y = GEE_resid, color=factor(start_station_id))) + 
-  geom_smooth()
+  geom_smooth(se = FALSE)+
+  theme_classic()+
+  labs(x = "Start Date",
+       y = "GEE residual",
+       title = "Stations with Top 5 Prediction Errors with respect to Time",
+       color = "Station ID")
+
 
 data %>% 
   filter(start_station_id %in% IDS) %>% 
   filter(start_date == "2021-07-04") %>% 
   ggplot() + 
-  geom_sf(data=DC_data, fill = "white")+
-  geom_sf(aes(geometry=geometry, color = GEE_resid),size=.5) +
+  geom_sf(data=DC_data, color = "white")+
+  geom_sf(aes(geometry=geometry),fill="coral",pch=23, size=3, alpha=I(0.5)) +
   theme_classic() + 
-  labs(title = "Model Prediction Errors from each station on July 4th, 2021", color = "Prediction Errors") +
+  labs(title = "Stations with Top 5 Prediction Errors on July 4th, 2021", color = "Prediction Errors") +
   scale_color_gradient2(low = "blue",mid='white', high = "red") 
 
 
-DC_resid_avg %>% 
-  ggplot() +
-  geom_sf(aes(fill = resid_by_census,
-              geometry = geometry)) +
-  scale_fill_gradient2(name = "Residuals", mid = "white", high = "red", low = "blue") + 
-  labs(title = "GEE Residuals Map") +
-  theme_classic() + 
-  theme(axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        axis.line = element_blank(),
-        plot.title = element_text(hjust = 0.5)) 
+# DC_resid_avg %>% 
+#   ggplot() +
+#   geom_sf(aes(fill = resid_by_census,
+#               geometry = geometry)) +
+#   scale_fill_gradient2(name = "Residuals", mid = "white", high = "red", low = "blue") + 
+#   labs(title = "GEE Residuals Map") +
+#   theme_classic() + 
+#   theme(axis.text = element_blank(),
+#         axis.ticks = element_blank(),
+#         axis.line = element_blank(),
+#         plot.title = element_text(hjust = 0.5)) 
 ```
 
 ```{r}
