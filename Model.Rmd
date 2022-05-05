@@ -14,11 +14,11 @@ load("mergedData.RData")
 ```{r}
 library(geeM)
 library(dplyr)
+library(ggplot2)
 ```
 
 ```{r}
 colnames(data)
-
 data <- data %>% na.omit()
 ```
 
@@ -40,12 +40,36 @@ summary(model_1)
 summary(model_2)
 summary(model_3)
 ```
+
 ```{r}
-resid = model$y - predict(model)
-plot(predict(model), resid)
+resid = model_3$y - predict(model_3)
+data$GEE_resid <- resid
+
+DC_resid <- data %>% 
+  group_by(GEOID) %>% 
+  summarize(resid_by_census = mean(GEE_resid)) %>% 
+  right_join(DC_data, by = "GEOID") 
+  
+DC_resid %>% ggplot() +
+  geom_sf(aes(fill = resid_by_census,
+              geometry = geometry)) +
+  scale_fill_gradient2(name = "Residuals", mid = "white", high = "red", low = "blue") + 
+  labs(title = "GEE Residuals Map") +
+  theme_classic() + 
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        plot.title = element_text(hjust = 0.5)) 
+
+
+
 ```
 
 ```{r}
 summary(super_simple_mod)
+```
+
+```{r}
+data %>% filter(GEOID == "11001004100")
 ```
 
