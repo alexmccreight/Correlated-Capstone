@@ -23,21 +23,22 @@ data <- data %>% na.omit()
 ```
 
 ```{r}
-model <- geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  HumidityCat+ WindCat + IncomeE + PopE + `Race_White alone` + distToWM + distToGU, id = start_station_id, data = data, corstr = "ar1")
+model_1 <- geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  HumidityCat+ WindCat + IncomeE + AgeE + distToWM + `Race_White alone`, id = start_station_id, data = data, corstr = "independence")
 ```
 
 ```{r}
-model_1 <- geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  HumidityCat+ WindCat + IncomeE + PopE + `Race_White alone` + distToWM + distToGU, id = start_station_id, data = data, corstr = "independence")
+model_2 <- geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  HumidityCat+ WindCat + IncomeE + AgeE + distToWM + `Race_White alone`, id = start_station_id, data = data, corstr = "exchangeable")
 ```
 
 ```{r}
-model_2 <- geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  HumidityCat+ WindCat + IncomeE + PopE + `Race_White alone` + distToWM + distToGU, id = start_station_id, data = data, corstr = "exchangeable")
+model_3 <- geem(rider_number ~ avg_duration + avg_dist + TemperatureCat +  HumidityCat+ WindCat + IncomeE + AgeE + distToWM + `Race_White alone`, id = start_station_id, data = data, corstr = "ar1")
 ```
 
+
 ```{r}
-summary(model)
 summary(model_1)
 summary(model_2)
+summary(model_3)
 ```
 ```{r}
 resid = model$y - predict(model)
@@ -45,14 +46,6 @@ plot(predict(model), resid)
 ```
 
 ```{r}
-resid = model_1$y - predict(model_1)
-plot(predict(model_1), resid)
+summary(super_simple_mod)
 ```
-
-
-```{r}
-resid = model_2$y - predict(model_2)
-plot(predict(model_2), resid)
-```
-
 
