@@ -16,6 +16,7 @@ load("spatialData.RData")
 library(geeM)
 library(dplyr)
 library(ggplot2)
+library(sf)
 ```
 
 ```{r}
@@ -43,15 +44,41 @@ summary(model_3)
 ```
 
 ```{r}
-resid = model_3$y - predict(model_3)
+# data <- data %>% 
+#   select(c(start_date,  TemperatureCat, HumidityCat, WindCat, `Race_White alone`, rider_number, start_station_id, GEOID, distToWM)) 
+#   # na.omit()
+
+super_simple_mod <- geem(rider_number ~ TemperatureCat + HumidityCat + WindCat + `Race_White alone`+distToWM,
+                         data = data, 
+                         id = start_station_id, 
+                         corstr = "exchangeable")
+
+
+```
+
+
+
+```{r}
+resid = super_simple_mod$y - predict(super_simple_mod)
 data$GEE_resid <- resid
 
-DC_resid <- data %>% 
+DC_resid_avg <- data %>% 
   group_by(GEOID) %>% 
   summarize(resid_by_census = mean(GEE_resid)) %>% 
   right_join(DC_data, by = "GEOID") 
+
+data %>% 
+  filter(start_date == "2021-07-04") %>% 
+  ggplot() + 
+  geom_sf(color = "white")+
+  geom_sf(aes(geometry=geometry, color = GEE_resid)) +
+  theme_classic() + 
+  labs(title = "Total rides from each station on July 4th, 2021", color = "Number of Riders") +
+ # scale_color_viridis_c('Total number of rides',option = "magma") +
+  scale_color_continuous(low = "light pink", high = "red") 
   
-DC_resid %>% ggplot() +
+DC_resid %>% 
+  ggplot() +
   geom_sf(aes(fill = resid_by_census,
               geometry = geometry)) +
   scale_fill_gradient2(name = "Residuals", mid = "white", high = "red", low = "blue") + 
