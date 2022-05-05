@@ -40,14 +40,19 @@ summary(model_1)
 summary(model_2)
 ```
 ```{r}
-summary(model)$coefficients[,2]
+resid = model$y - predict(model)
+plot(predict(model), resid)
 ```
 
 ```{r}
+resid = model_1$y - predict(model_1)
+plot(predict(model_1), resid)
 ```
 
 
 ```{r}
+resid = model_2$y - predict(model_2)
+plot(predict(model_2), resid)
 ```
 
 

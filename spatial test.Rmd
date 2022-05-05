@@ -57,13 +57,13 @@ ggplot(DC_data) +
 bike_spatial <- st_join(bike_coord, DC_data) %>% filter(!is.na(GEOID))
 
 ggplot(DC_data) + 
-  geom_sf(aes(fill = IncomeE),size=.1) +
+  geom_sf(aes(fill = AgeE),size=.1) +
   geom_sf(data = bike_spatial,color='yellow',size=.2) + 
   geom_sf(data = areawater,fill='lightblue',color='lightblue') + 
   geom_sf(data = roads_sub,color='orange') +
   geom_sf(data = points_of_interest, aes(geometry=geometry), color = 'red') +
-  scale_fill_continuous(name = "Median Income", labels = comma, high = "blue", low = "lightgrey") +
-  labs(title = "Median Income by Census Tract") +
+  scale_fill_continuous(name = "Median Age", labels = comma, high = "blue", low = "lightgrey") +
+  labs(title = "Median Age by Census Tract") +
   theme_classic() + 
   theme(axis.text = element_blank(),
         axis.ticks = element_blank(),
