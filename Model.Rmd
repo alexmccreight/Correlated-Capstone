@@ -59,8 +59,8 @@ super_simple_mod <- geem(rider_number ~ TemperatureCat + HumidityCat + WindCat +
 
 
 ```{r}
-resid = super_simple_mod$y - predict(super_simple_mod)
-data$GEE_resid <- resid
+data$GEE_resid = data$rider_number - predict(super_simple_mod)
+
 
 DC_resid_avg <- data %>% 
   group_by(GEOID) %>% 
@@ -70,14 +70,33 @@ DC_resid_avg <- data %>%
 data %>% 
   filter(start_date == "2021-07-04") %>% 
   ggplot() + 
-  geom_sf(color = "white")+
-  geom_sf(aes(geometry=geometry, color = GEE_resid)) +
+  geom_sf(data=DC_data, fill = "white")+
+  geom_sf(aes(geometry=geometry, color = GEE_resid),size=.5) +
   theme_classic() + 
-  labs(title = "Total rides from each station on July 4th, 2021", color = "Number of Riders") +
+  labs(title = "Model Prediction Errors from each station on July 4th, 2021", color = "Prediction Errors") +
  # scale_color_viridis_c('Total number of rides',option = "magma") +
-  scale_color_continuous(low = "light pink", high = "red") 
+  scale_color_gradient2(low = "blue",mid='white', high = "red") 
+
+IDS <- data %>% filter(abs(scale(GEE_resid))>3) %>% count(start_station_id) %>% arrange(desc(n)) %>% slice(1:5) %>% pull(start_station_id)
   
-DC_resid %>% 
+
+data %>% 
+  filter(start_station_id %in% IDS) %>% 
+  ggplot(aes(x = start_date, y = GEE_resid, color=factor(start_station_id))) + 
+  geom_smooth()
+
+data %>% 
+  filter(start_station_id %in% IDS) %>% 
+  filter(start_date == "2021-07-04") %>% 
+  ggplot() + 
+  geom_sf(data=DC_data, fill = "white")+
+  geom_sf(aes(geometry=geometry, color = GEE_resid),size=.5) +
+  theme_classic() + 
+  labs(title = "Model Prediction Errors from each station on July 4th, 2021", color = "Prediction Errors") +
+  scale_color_gradient2(low = "blue",mid='white', high = "red") 
+
+
+DC_resid_avg %>% 
   ggplot() +
   geom_sf(aes(fill = resid_by_census,
               geometry = geometry)) +
