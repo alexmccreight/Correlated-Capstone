@@ -51,6 +51,7 @@ clean_bike %>%
 ```{r}
 data <- merge(x = clean_bike, y = bike_spatial, by = "start_station_id", all.y = TRUE)
 ```
+
 ```{r}
 data_74 <-
   data %>% 
@@ -96,7 +97,7 @@ data <- data %>%
 ```
 
 ```{r}
-save(clean_bike, bike_spatial, data, data_74, file = "mergedData.RData")
+save(clean_bike, data, data_74, file = "mergedData.RData")
 ```
 
 ```{r}

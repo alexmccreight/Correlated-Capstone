@@ -9,6 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 load("mergedData.RData")
+load("spatialData.RData")
 ```
 
 ```{r}
@@ -60,9 +61,6 @@ DC_resid %>% ggplot() +
         axis.ticks = element_blank(),
         axis.line = element_blank(),
         plot.title = element_text(hjust = 0.5)) 
-
-
-
 ```
 
 ```{r}

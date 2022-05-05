@@ -79,6 +79,28 @@ points_of_interest <- points_of_interest %>%
   st_as_sf(coords = c('X','Y')) %>% 
   st_set_crs(st_crs(DC_data)) %>% 
   st_transform()
+
+bike <- read_csv("D:\\STAT 452\\Correlated-Capstone\\bike_data.csv")
+clean_bike <- read_csv("D:\\STAT 452\\Correlated-Capstone\\final_bike.csv")
+
+bike_coord <- bike %>% 
+  group_by(start_station_id) %>%
+  summarize(start_lat = mean(start_lat,na.rm=TRUE), start_lng = mean(start_lng,na.rm=TRUE))
+bike_coord <- bike_coord %>% st_as_sf(coords=c('start_lng','start_lat'))
+st_crs(bike_coord) <- st_crs(DC_data)
+#bike_coord <- st_transform(bike_coord, crs = st_crs(DC_data))
+
+bike_coord_sub <- st_crop(bike_coord,st_bbox(DC_data))
+
+bike_spatial <- st_join(bike_coord, DC_data) %>% filter(!is.na(GEOID))
+
+bike_spatial$distToWM = st_distance(bike_spatial,points_of_interest %>% 
+                                      filter(ALIASNAME == "WASHINGTON MONUMENT")) %>% 
+  as.vector()
+
+bike_spatial$distToGU = st_distance(bike_spatial,points_of_interest %>% 
+                                      filter(ALIASNAME == "GEORGE WASHINGTON UNIVERSITY HALL OF GOVERNMENT")) %>% 
+  as.vector()
   
 
 roads_sub <- roads %>% filter( (st_intersects(roads,DC_data) %>% lengths()) > 0) %>% filter(RTTYP %in% c('U','I'))
@@ -100,5 +122,7 @@ DC_data$MinDistToHwy = distToRoads %>% apply(1,min)
 DC_data$NumHwys = distToRoads %>% apply(1,function(v) length(unique(roads_sub$FULLNAME[v == 0])))
 DC_data$AnyHwys = DC_data$NumHwys > 0
 
-save(colleges_sub,DC_data,areawater,roads_sub,points_of_interest, file = "SpatialData.RData")
+
+
+save(colleges_sub,DC_data,areawater,roads_sub,points_of_interest, bike_spatial, file = "SpatialData.RData")
 
